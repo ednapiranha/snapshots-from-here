@@ -50,22 +50,119 @@ table {
 /* main content */
 
 @font-face {
-    font-family: 'FranklinGothicDemiComp';
-    src: url('franklingothic-demicomp-webfont.eot');
-    src: url('franklingothic-demicomp-webfont.eot?#iefix') format('embedded-opentype'),
-         url('franklingothic-demicomp-webfont.woff') format('woff'),
-         url('franklingothic-demicomp-webfont.ttf') format('truetype'),
-         url('franklingothic-demicomp-webfont.svg#FranklinGothicDemiComp') format('svg');
+    font-family: 'FranklinGothicBookXComp';
+    src: url('franklingothic-bookxcomp-webfont.eot');
+    src: url('franklingothic-bookxcomp-webfont.eot?#iefix') format('embedded-opentype'),
+         url('franklingothic-bookxcomp-webfont.woff') format('woff'),
+         url('franklingothic-bookxcomp-webfont.ttf') format('truetype'),
+         url('franklingothic-bookxcomp-webfont.svg#FranklinGothicBookXComp') format('svg');
     font-weight: normal;
     font-style: normal;
-
 }
 
 body {
-    font-family: 'FranklinGothicDemiComp';
+    background-color: #f4f4f4;
+    font-family: 'FranklinGothicBookXComp';
+    letter-spacing: 1px;
     padding: 10px;
 }
 
 a {
+    border-bottom: 2px solid #f4f4f4;
+    color: #187fb4;
     text-decoration: none;
+}
+
+a:hover {
+    border-bottom: 2px solid #187fb4;
+}
+
+.wrapper {
+    clear: both;
+    float: left;
+    width: 100%;
+}
+
+#logo, h1 {
+    color: #222;
+    font-size: 30px;
+    font-weight: normal;
+    text-transform: uppercase;
+}
+
+#logo:hover {
+    border-bottom: 2px solid #f4f4f4;
+}
+
+ul.user-actions {
+    display: block;
+    float: right;
+}
+
+ul.user-actions li {
+    float: left;
+    margin: 0px 5px 0px 5px;
+    width: auto;
+}
+
+ul.user-actions li a {
+    background-color: #ddd;
+    border-bottom: 2px solid #bbb;
+    border-radius: 3px;
+    display: block;
+    font-size: 18px;
+    padding: 3px 7px 3px 7px;
+    text-transform: uppercase;
+}
+
+ul.user-actions li a:hover {
+    background-color: #bbb;
+    border-bottom: 0px;
+    border-top: 2px solid #ddd;
+    color: #303639;
+}
+
+h1 {
+    color: #444;
+    margin-top: 10px;
+}
+
+.form-wrapper {
+    border-top: 1px solid #ddd;
+    clear: both;
+    float: left;
+    margin: 20px 0px 20px 0px;
+    padding: 20px 0px 20px 0px;
+    width: 100%;
+}
+
+input {
+    margin-bottom: 10px;
+}
+
+input[type="text"] {
+    border: 1px solid #ccc;
+    padding: 5px;
+    width: 95%;
+}
+
+button {
+    background-color: #0f70a2;
+    border: 0px;
+    border-bottom: 2px solid #052c40;
+    border-radius: 5px;
+    color: #cceeff;
+    cursor: pointer;
+    font-size: 14px;
+    letter-spacing: 0px;
+    margin-top: 10px;
+    padding: 3px 5px 3px 5px;
+    text-transform: uppercase;
+}
+
+button:hover {
+    background-color: #052c40;
+    border-bottom: 0px;
+    border-top: 2px solid #0f70a2;
+    color: #2b89b8;
 }

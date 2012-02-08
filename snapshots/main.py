@@ -58,11 +58,14 @@ def set_email():
     return redirect(url_for('your_snapshots'))
 
 
-@app.route('/upload', methods=['POST'])
+@app.route('/upload', methods=['GET', 'POST'])
 @authenticated
 def upload():
     """Upload a photo"""
-    return redirect(url_for('snapshot'))
+    if request.method == 'POST':
+        return redirect(url_for('snapshot'))
+    else:
+        return render_template('upload.html')
 
 
 @app.route('/snapshot', methods=['GET'])
