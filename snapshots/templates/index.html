@@ -5,5 +5,12 @@
 {% endblock %}
 
 {% block content %}
-
+  <ul class="photos">
+    {% for snapshot in snapshots %}
+      <li>
+        <img src="{{ snapshot['image_thumb'] }}">
+        <p>{{ snapshot['description'] }}</p>
+      </li>
+    {% endfor %}
+  </ul>
 {% endblock %}

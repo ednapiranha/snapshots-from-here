@@ -4,6 +4,7 @@ import simplejson as json
 import time
 
 from httplib2 import Http
+from PIL import Image
 from urllib import urlencode
 
 from flask import (Flask, jsonify, redirect,
@@ -19,12 +20,15 @@ app.secret_key = settings.SESSION_SECRET
 
 h = Http()
 snappy = Snappy()
+PHOTO_THUMB = 250, 250
 
 
 @app.route('/', methods=['GET'])
 def main():
     """Default landing page"""
-    return render_template('index.html')
+    snapshots = snappy.get_recent()
+    return render_template('index.html',
+                           snapshots=snapshots)
 
 
 @app.route('/your_snapshots', methods=['GET'])
@@ -61,8 +65,20 @@ def set_email():
 @app.route('/upload', methods=['GET', 'POST'])
 @authenticated
 def upload():
-    """Upload a photo"""
+    """Upload a photo and save two versions - the original and the thumb."""
     if request.method == 'POST':
+        filename = str(int(time.time()))
+        request.files['photo'].save(os.path.join('tmp/', filename))
+
+        thumb = Image.open(os.path.join('tmp/', filename))
+        thumb.thumbnail(PHOTO_THUMB, Image.ANTIALIAS)
+        thumb.save('tmp/' + filename + '_thumb', 'PNG')
+
+        large = Image.open(os.path.join('tmp/', filename))
+        large.save('tmp/' + filename + '_original', 'PNG')
+        snappy.upload(request.form['description'],
+                      filename,
+                      session.get('snapshots_token'))
         return redirect(url_for('snapshot'))
     else:
         return render_template('upload.html')
@@ -80,6 +96,7 @@ def snapshot():
 def logout():
     """Log the user out"""
     session['snapshots_email'] = None
+    session['snapshots_token'] = None
     return redirect(url_for('main'))
 
 

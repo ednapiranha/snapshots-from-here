@@ -1,8 +1,16 @@
 import base64
+import os
 import random
 import time
 
+from boto.s3.key import Key
+from PIL import Image
+from pymongo import DESCENDING
+from pymongo.objectid import ObjectId
+
 import settings
+
+CONTENT_TYPE = 'image/png'
 
 
 class Snappy(object):
@@ -39,3 +47,33 @@ class Snappy(object):
                                    email,
                                    str(int(time.time())))
         return base64.b64encode(token_string)
+
+    def upload(self, description, filename, sender_token):
+        """Upload the image to the user's account."""
+        image_full_path = os.path.join('tmp/', filename + '_original')
+        image_full_path_thumb = os.path.join('tmp/', filename + '_thumb')
+
+        aws_key = Key(settings.BUCKET)
+        aws_key.key = filename + '_original.png'
+        aws_key.set_contents_from_filename(image_full_path,
+                                           headers={'Content-Type': CONTENT_TYPE})
+        image_full_path_original = '%s%s_original.png' % (settings.IMAGE_URL,
+                                                          filename)
+
+        aws_key.key = filename + '_thumb.png'
+        aws_key.set_contents_from_filename(image_full_path_thumb,
+                                           headers={'Content-Type': CONTENT_TYPE})
+        image_full_path_thumb = '%s%s_thumb.png' % (settings.IMAGE_URL, filename)
+        
+        self.db.photos.update({"image_filename":filename},
+                                {"$set":{"description":description,
+                                         "image_original":image_full_path_original,
+                                         "image_thumb":image_full_path_thumb,
+                                         "token":sender_token,
+                                         "created_at":int(time.time())}},
+                                          upsert=True) 
+        return image_full_path
+        
+    def get_recent(self):
+        """Get all recently uploaded images."""
+        return self.db.photos.find().sort("created_at", DESCENDING)                    

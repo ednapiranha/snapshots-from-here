@@ -1,0 +1,23 @@
+SESSION_SECRET = '<secret>'
+
+AWS_S3_BUCKET = '<aws_bucket>'
+AWS_S3_KEY = '<aws_key>'
+AWS_S3_SECRET = '<aws_secret>'
+IMAGE_URL = 'https://s3.amazonaws.com/<aws_bucket>'
+
+DOMAIN = 'http://localhost:5000'
+
+DEBUG = True
+
+import pymongo
+
+test_connection = pymongo.Connection("localhost", 27017)
+TEST_DATABASE = test_connection.snapshots_from_here_test
+
+connection = pymongo.Connection("localhost", 27017)
+DATABASE = connection.snapshots_from_here
+
+from boto.s3.connection import S3Connection
+
+conn = S3Connection(AWS_S3_KEY, AWS_S3_SECRET)
+BUCKET = conn.create_bucket(AWS_S3_BUCKET)

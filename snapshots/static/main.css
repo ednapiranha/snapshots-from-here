@@ -153,10 +153,10 @@ button {
     border-radius: 5px;
     color: #cceeff;
     cursor: pointer;
-    font-size: 14px;
-    letter-spacing: 0px;
+    font-family: 'FranklinGothicBookXComp';
+    font-size: 20px;
     margin-top: 10px;
-    padding: 3px 5px 3px 5px;
+    padding: 2px 5px 0px 5px;
     text-transform: uppercase;
 }
 
@@ -165,4 +165,25 @@ button:hover {
     border-bottom: 0px;
     border-top: 2px solid #0f70a2;
     color: #2b89b8;
+}
+
+ul.photos li {
+    display: block;
+    float: left;
+    height: 250px;
+    margin: 3px;
+    position: relative;
+    width: 250px;
+}
+
+ul.photos li p {
+    background-color: #111;
+    bottom: 0px;
+    color: #eee;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    opacity: 0.9;
+    padding: 2px 4px 2px 4px;
+    position: absolute;
+    right: 0px;
 }
