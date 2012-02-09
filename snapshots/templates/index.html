@@ -8,8 +8,10 @@
   <ul class="photos">
     {% for snapshot in snapshots %}
       <li>
-        <img src="{{ snapshot['image_thumb'] }}">
-        <p>{{ snapshot['description'] }}</p>
+        <a href="{{ url_for('snapshot', id=snapshot['_id']) }}">
+          <img src="{{ snapshot['image_thumb'] }}">
+          <p>{{ snapshot['description'] }}</p>
+        </a>
       </li>
     {% endfor %}
   </ul>

@@ -12,7 +12,7 @@
       <script type="text/javascript" src="{{ url_for('static', filename='main.js') }}"></script>
     </head>
   {% endblock %}
-  <body>
+  <body class="{% block page_type %}{% endblock %}">
     <div class="wrapper">
       <a id="logo" href="{{ url_for('main') }}">Snapshots from here.</a>
       <ul class="user-actions">

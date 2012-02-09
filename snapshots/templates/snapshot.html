@@ -1,0 +1,10 @@
+{% extends "shared/layout.html" %}
+
+{% block page_type %}single{% endblock %}
+
+{% block content %}
+  <div class="photo">
+    <img src="{{ snapshot['image_original'] }}">
+    <p>{{ snapshot['description'] }}</p>
+  </div>
+{% endblock %}

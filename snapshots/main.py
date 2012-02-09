@@ -84,12 +84,13 @@ def upload():
         return render_template('upload.html')
 
 
-@app.route('/snapshot', methods=['GET'])
+@app.route('/snapshot/<id>', methods=['GET'])
 @authenticated
-def snapshot():
+def snapshot(id=None):
     """Your snapshot"""
-    # TODO: Add upload call to snappy
-    return render_template('snapshot.html')
+    snapshot = snappy.get_image(id)
+    return render_template('snapshot.html',
+                           snapshot=snapshot)
 
 
 @app.route('/logout', methods=['GET'])

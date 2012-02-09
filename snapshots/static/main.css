@@ -67,6 +67,10 @@ body {
     padding: 10px;
 }
 
+body.single {
+    background-color: #111;
+}
+
 a {
     border-bottom: 2px solid #f4f4f4;
     color: #187fb4;
@@ -81,6 +85,17 @@ a:hover {
     clear: both;
     float: left;
     width: 100%;
+}
+
+.single .photo {
+    clear: both;
+    float: left;
+    margin-top: 20px;
+}
+
+.single a#logo {
+    border-bottom: #111;
+    color: #333;
 }
 
 #logo, h1 {
@@ -167,13 +182,22 @@ button:hover {
     color: #2b89b8;
 }
 
+ul.photos {
+    margin-top: 20px;
+}
+
 ul.photos li {
+    background-color: #111;
     display: block;
     float: left;
     height: 250px;
     margin: 3px;
     position: relative;
     width: 250px;
+}
+
+ul.photos li a:hover {
+    border-bottom: 0px;
 }
 
 ul.photos li p {
@@ -186,4 +210,9 @@ ul.photos li p {
     padding: 2px 4px 2px 4px;
     position: absolute;
     right: 0px;
+}
+
+.single p {
+    color: #ccc;
+    font-family: Arial, sans-serif;
 }

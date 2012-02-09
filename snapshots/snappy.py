@@ -76,4 +76,8 @@ class Snappy(object):
         
     def get_recent(self):
         """Get all recently uploaded images."""
-        return self.db.photos.find().sort("created_at", DESCENDING)                    
+        return self.db.photos.find().sort("created_at", DESCENDING)
+    
+    def get_image(self, image_id):
+        """Return the image matching the given id."""
+        return self.db.photos.find_one({"_id":ObjectId(image_id)})        
