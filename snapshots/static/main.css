@@ -71,6 +71,10 @@ body.single {
     background-color: #111;
 }
 
+body.edit {
+    background-color: #4fd4ff;
+}
+
 a {
     border-bottom: 2px solid #f4f4f4;
     color: #187fb4;
@@ -91,6 +95,7 @@ a:hover {
     clear: both;
     float: left;
     margin-top: 20px;
+    width: 100%;
 }
 
 .single a#logo {
@@ -183,7 +188,7 @@ button:hover {
 }
 
 ul.photos {
-    margin-top: 20px;
+    margin-top: 10px;
 }
 
 ul.photos li {
@@ -196,7 +201,7 @@ ul.photos li {
     width: 250px;
 }
 
-ul.photos li a:hover {
+ul.photos li a, ul.photos li a:hover {
     border-bottom: 0px;
 }
 
@@ -215,4 +220,46 @@ ul.photos li p {
 .single p {
     color: #ccc;
     font-family: Arial, sans-serif;
+    margin-top: 20px;
+}
+
+.actions {
+    background-color: #1c1c1c;
+    border-bottom-left-radius: 3px;
+    -moz-border-radius-bottomleft: 3px;
+    -webkit-border-bottom-left-radius: 3px;
+    border-top-left-radius: 3px;
+    -moz-border-radius-topleft: 3px;
+    -webkit-border-top-left-radius: 3px;
+    clear: both;
+    float: left;
+    margin-top: 20px;
+    padding: 5px;
+    width: 100%;
+}
+
+.actions a {
+    border-bottom: 0px;
+    border-radius: 3px;
+    display: block;
+    float: left;
+    font-size: 18px;
+    margin-right: 10px;
+    padding: 3px 6px 3px 6px;
+    text-transform: uppercase;
+}
+
+.actions a.edit {
+    background-color: #4fd4ff;
+    color: #165f77;
+}
+
+.actions a.delete {
+    background-color: #ce193b;
+    color: #ffdee3;
+}
+
+.actions a:hover {
+    background-color: #fff;
+    color: #333;
 }

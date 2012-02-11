@@ -21,6 +21,7 @@ app.secret_key = settings.SESSION_SECRET
 h = Http()
 snappy = Snappy()
 PHOTO_THUMB = 250, 250
+PHOTO_MEDIUM = 850, 450
 
 
 @app.route('/', methods=['GET'])
@@ -65,32 +66,57 @@ def set_email():
 @app.route('/upload', methods=['GET', 'POST'])
 @authenticated
 def upload():
-    """Upload a photo and save two versions - the original and the thumb."""
+    """Upload a photo and save two versions - the original, medium
+    and the thumb.
+    """
     if request.method == 'POST':
         filename = str(int(time.time()))
         request.files['photo'].save(os.path.join('tmp/', filename))
 
         thumb = Image.open(os.path.join('tmp/', filename))
-        thumb.thumbnail(PHOTO_THUMB, Image.ANTIALIAS)
+        thumb.thumbnail(PHOTO_THUMB, Image.BICUBIC)
         thumb.save('tmp/' + filename + '_thumb', 'PNG')
+
+        medium = Image.open(os.path.join('tmp/', filename))
+        medium.thumbnail(PHOTO_MEDIUM, Image.BICUBIC)
+        medium.save('tmp/' + filename + '_medium', 'PNG')
 
         large = Image.open(os.path.join('tmp/', filename))
         large.save('tmp/' + filename + '_original', 'PNG')
-        snappy.upload(request.form['description'],
-                      filename,
-                      session.get('snapshots_token'))
-        return redirect(url_for('snapshot'))
+        snapshot = snappy.upload(request.form['description'],
+                                 filename,
+                                 session.get('snapshots_token'))
+        return redirect(url_for('snapshot', id=snapshot['_id']))
     else:
         return render_template('upload.html')
 
 
 @app.route('/snapshot/<id>', methods=['GET'])
-@authenticated
 def snapshot(id=None):
-    """Your snapshot"""
+    """Your snapshot."""
     snapshot = snappy.get_image(id)
-    return render_template('snapshot.html',
-                           snapshot=snapshot)
+    return render_template('snapshot.html', snapshot=snapshot)
+
+
+@app.route('/snapshot/edit/<id>', methods=['GET', 'POST'])
+@authenticated
+def edit(id=None):
+    """Edit or update an existing snapshot."""
+    snapshot = snappy.get_image_by_user(id, session['snapshots_token'])
+
+    if request.method == 'POST':
+        snappy.update_description(id, request.form['description'])
+        return redirect(url_for('snapshot', id=snapshot['_id']))
+    else:
+        return render_template('edit.html', snapshot=snapshot)
+
+
+@app.route('/snapshot/delete/<id>', methods=['GET'])
+@authenticated
+def delete(id=None):
+    """Delete an existing snapshot."""
+    snappy.delete_image(id, session['snapshots_token'])
+    return redirect(url_for('main'))
 
 
 @app.route('/logout', methods=['GET'])
