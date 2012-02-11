@@ -88,10 +88,31 @@ class Snappy(object):
                               {"$set":{"description":description}})
         return True
 
-    def get_recent(self):
-        """Get all recently uploaded images."""
-        return self.db.photos.find().sort("created_at", DESCENDING)
-    
+    def get_recent(self, page=0, nav='next'):
+        """Get all recently uploaded images. Navigation defaults at the next
+        image created (descending). If navigation is set to 'prev', we go in the
+        reverse direction.
+        """
+        photo_total = self.db.photos.count()
+        if nav == 'next':
+            page = int(page)
+            if page > photo_total:
+                page = photo_total
+        else:
+            page = int(page) - 1
+            if page < -1:
+                page = -1
+
+        try:
+            return self.db.photos.find().sort("created_at",
+                    DESCENDING).skip(page*1).limit(1)[0]
+        except IndexError:
+            return self.db.photos.find().sort("created_at").limit(1)[0]
+
+    def get_photo_count(self):
+        """Get the total number of photos."""
+        return self.db.photos.count()        
+
     def get_image(self, image_id):
         """Return the image matching the given id."""
         return self.db.photos.find_one({"_id":ObjectId(image_id)})

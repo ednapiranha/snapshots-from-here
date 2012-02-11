@@ -62,7 +62,7 @@ table {
 
 body {
     background-color: #f4f4f4;
-    font-family: 'FranklinGothicBookXComp';
+    font-family: 'FranklinGothicBookxComp';
     letter-spacing: 1px;
     padding: 10px;
 }
@@ -91,15 +91,24 @@ a:hover {
     width: 100%;
 }
 
-.single .photo {
+.single .photo, div.edit {
     clear: both;
     float: left;
     margin-top: 20px;
     width: 100%;
 }
 
+.single .photo {
+    height: 400px;
+    max-width: 850px;
+    min-width: 200px;
+}
+
+.single .photo img {
+    max-width: 90%;
+}
+
 .single a#logo {
-    border-bottom: #111;
     color: #333;
 }
 
@@ -110,8 +119,8 @@ a:hover {
     text-transform: uppercase;
 }
 
-#logo:hover {
-    border-bottom: 2px solid #f4f4f4;
+#logo, #logo:hover {
+    border-bottom: 0px;
 }
 
 ul.user-actions {
@@ -211,10 +220,13 @@ ul.photos li p {
     color: #eee;
     font-family: Arial, sans-serif;
     font-size: 12px;
+    line-height: 14px;
     opacity: 0.9;
     padding: 2px 4px 2px 4px;
     position: absolute;
     right: 0px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .single p {

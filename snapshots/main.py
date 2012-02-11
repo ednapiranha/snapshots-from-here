@@ -14,6 +14,9 @@ from flask import (Flask, jsonify, redirect,
 
 import settings
 
+from pymongo import DESCENDING
+from pymongo.objectid import ObjectId
+
 from helper import *
 from snappy import Snappy
 
@@ -29,9 +32,21 @@ PHOTO_MEDIUM = 850, 450
 @app.route('/', methods=['GET'])
 def main():
     """Default landing page"""
-    snapshots = snappy.get_recent()
+    snapshot = snappy.db.photos.find().sort("created_at",
+            DESCENDING).limit(1)[0]
     return render_template('index.html',
-                           snapshots=snapshots)
+                           snapshot=snapshot,
+                           photo_count=snappy.get_photo_count())
+                        
+
+@app.route('/get_snapshot/<page>/<nav>', methods=['GET'])
+def get_snapshot(page=1, nav='next'):
+    """Get the latest snapshot from pagination/navigation"""
+    snapshot = snappy.get_recent(page=page, nav=nav)
+    return jsonify({'snapshot':
+            {'image_medium': snapshot['image_medium'],
+             'id': str(ObjectId(snapshot['_id'])),
+             'photo_count': snappy.get_photo_count()}})
 
 
 @app.route('/your_snapshots', methods=['GET'])

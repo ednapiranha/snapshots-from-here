@@ -1,18 +1,11 @@
 {% extends "shared/layout.html" %}
 
-{% block title %}
-    Snapshots from here.
-{% endblock %}
+{% block page_type %}single home{% endblock %}
 
 {% block content %}
-  <ul class="photos">
-    {% for snapshot in snapshots %}
-      <li>
-        <a href="{{ url_for('snapshot', id=snapshot['_id']) }}">
-          <img src="{{ snapshot['image_thumb'] }}">
-          <p>{{ snapshot['description'] }}</p>
-        </a>
-      </li>
-    {% endfor %}
-  </ul>
+  <a href="{{ url_for('snapshot', id=snapshot['_id']) }}">
+    <div class="photo" data-photo-count="{{ photo_count }}">
+      <img src="{{ snapshot['image_medium'] }}">
+    </div>
+  </a>
 {% endblock %}
