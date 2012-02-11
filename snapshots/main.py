@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import os
+import random
 import simplejson as json
+import string
 import time
 
 from httplib2 import Http
@@ -125,6 +127,23 @@ def logout():
     session['snapshots_email'] = None
     session['snapshots_token'] = None
     return redirect(url_for('main'))
+
+
+@app.before_request
+def csrf_protect():
+    if request.method == "POST":
+        token = session.pop('_csrf_token', None)
+        if not token or token != request.form.get('_csrf_token'):
+            abort(403)
+
+def generate_csrf_token():
+    if '_csrf_token' not in session:
+        session['_csrf_token'] = ''.join(
+                random.choice(string.ascii_lowercase + string.digits) for x in range(30))
+
+    return session['_csrf_token']
+
+app.jinja_env.globals['csrf_token'] = generate_csrf_token
 
 
 if __name__ == '__main__':
