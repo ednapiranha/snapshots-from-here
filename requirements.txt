@@ -1,9 +1,9 @@
 Flask==0.8
-Jinja2==2.6
+Jinja2
 PIL==1.1.7
 PyYAML==3.10
-Werkzeug==0.8.1
-boto==2.1.1
+Werkzeug
+boto==2.2.1
 -e git://github.com/fredj/flask-jsonify.git#egg=flask_jsonify
 -e git://github.com/ednapiranha/httplib2.git#egg=httplib2
 simplejson==2.3.0
