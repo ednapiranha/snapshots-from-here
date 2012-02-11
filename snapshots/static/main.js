@@ -1,6 +1,7 @@
 $(function() {
+    "use strict";
     var page = 0;
-    
+
     // BrowserID login
     $('#login').click(function() {
         navigator.id.getVerifiedEmail(function(assertion) {
@@ -18,14 +19,14 @@ $(function() {
         var photo_count = parseInt($(this).find('.photo').data('photo-count'), 10);
 
         // left or prev
-        if(event.which == 37) {
+        if(event.which === 37) {
             page--;
             if(page < 1) {
                 page = 1;
             }
             nav = 'prev';
         // right or next
-        } else if(event.which == 39) {
+        } else if(event.which === 39) {
             page++;
             if(page > photo_count) {
                 page = photo_count;
@@ -34,7 +35,7 @@ $(function() {
         }
 
         $.getJSON('/get_snapshot/'+page+'/'+nav, function(data) {
-            self.attr('src', data['snapshot']['image_medium']);
+            self.attr('src', data.snapshot.image_medium);
         });
     });
 
