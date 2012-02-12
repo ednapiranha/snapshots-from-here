@@ -7,15 +7,14 @@ import time
 
 from httplib2 import Http
 from PIL import Image
+from pymongo import DESCENDING
+from pymongo.objectid import ObjectId
 from urllib import urlencode
 
 from flask import (abort, Flask, jsonify, redirect,
      render_template, request, session, url_for)
 
 import settings
-
-from pymongo import DESCENDING
-from pymongo.objectid import ObjectId
 
 from helper import *
 from snappy import Snappy
@@ -26,17 +25,20 @@ app.secret_key = settings.SESSION_SECRET
 h = Http()
 snappy = Snappy()
 PHOTO_THUMB = 250, 250
-PHOTO_MEDIUM = 992, 450
+PHOTO_MEDIUM = 992, 600
 
 
 @app.route('/', methods=['GET'])
 def main():
     """Default landing page"""
-    snapshot = snappy.db.photos.find().sort("created_at",
-            DESCENDING).limit(1)[0]
+    try:
+        snapshot = snappy.db.photos.find().sort("created_at",
+                DESCENDING).limit(1)[0]
+    except IndexError:
+        snapshot = []
     return render_template('index.html',
-                           snapshot=snapshot,
-                           photo_count=snappy.get_photo_count())
+                            snapshot=snapshot,
+                            photo_count=snappy.get_photo_count())
                         
 
 @app.route('/get_snapshot/<page>/<nav>', methods=['GET'])
@@ -45,8 +47,26 @@ def get_snapshot(page=1, nav='next'):
     snapshot = snappy.get_recent(page=page, nav=nav)
     return jsonify({'snapshot':
             {'image_medium': snapshot['image_medium'],
-             'id': str(ObjectId(snapshot['_id'])),
-             'photo_count': snappy.get_photo_count()}})
+             'id': str(ObjectId(snapshot['_id']))}})
+
+
+@app.route('/tag/<tag>', methods=['GET'])
+def get_first_tag(tag=None):
+    """Get the latest snapshot matching this tag."""
+    snapshot = snappy.get_recent_tag(tag=tag)
+    return render_template('tag.html',
+                            snapshot=snapshot,
+                            photo_count=snappy.get_photo_count(tag=tag),
+                            tag=tag)
+
+
+@app.route('/tag/<tag>/<page>/<nav>', methods=['GET'])
+def get_tag(tag=None, page=1, nav='next'):
+    """Get the latest snapshot matching this tag."""
+    snapshot = snappy.get_recent_tag(tag=tag, page=page, nav=nav)
+    return jsonify({'snapshot':
+            {'image_medium': snapshot['image_medium'],
+             'id': str(ObjectId(snapshot['_id']))}})
 
 
 @app.route('/your_snapshots', methods=['GET'])
@@ -91,16 +111,12 @@ def upload():
         filename = str(int(time.time()))
         request.files['photo'].save(os.path.join('tmp/', filename))
 
-        thumb = Image.open(os.path.join('tmp/', filename))
-        thumb.thumbnail(PHOTO_THUMB, Image.BICUBIC)
-        thumb.save('tmp/' + filename + '_thumb', 'PNG')
-
         medium = Image.open(os.path.join('tmp/', filename))
         medium.thumbnail(PHOTO_MEDIUM, Image.BICUBIC)
-        medium.save('tmp/' + filename + '_medium', 'PNG')
+        medium.save('tmp/' + filename + '_medium', 'JPEG')
 
         large = Image.open(os.path.join('tmp/', filename))
-        large.save('tmp/' + filename + '_original', 'PNG')
+        large.save('tmp/' + filename + '_original', 'JPEG')
         snapshot = snappy.upload(request.form['description'],
                                  filename,
                                  session.get('snapshots_token'))

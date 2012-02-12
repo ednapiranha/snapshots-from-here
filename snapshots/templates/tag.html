@@ -1,12 +1,13 @@
-{% extends "shared/layout.html" %}
+{% extends "index.html" %}
 
-{% block page_type %}single home{% endblock %}
+{% block header %}<h1>Tagged with: {{ tag }}</h1>{% endblock %}
 
 {% block content %}
   {% if snapshot['_id'] %}
     <a href="{{ url_for('snapshot', id=snapshot['_id']) }}">
       <div class="photo" data-photo-count="{{ photo_count }}">
-        <img src="{{ snapshot['image_medium'] }}" data-url="/get_snapshot/">
+        <img src="{{ snapshot['image_medium'] }}"
+             data-url="/tag/{{ tag }}/">
       </div>
     </a>
   {% endif %}

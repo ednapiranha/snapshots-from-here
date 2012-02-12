@@ -5,7 +5,9 @@
 {% block content %}
   <div class="photo">
     <img src="{{ snapshot['image_medium'] }}">
-    <p class="description">{{ snapshot['description'] }}</p>
+    <p class="description">
+      {{ snapshot['tagged_description']|safe }}
+    </p>
     {% if session['snapshots_token'] %}
       <div class="actions">
         {% if session['snapshots_token'] == snapshot['token'] %}

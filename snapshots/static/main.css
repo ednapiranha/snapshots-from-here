@@ -78,6 +78,10 @@ ul.user-actions {
     .wrapper {
         width: 768px;
     }
+
+    .single img {
+        max-width: 768px;
+    }
 }
 
 
@@ -101,6 +105,10 @@ ul.user-actions {
         margin-top: 15px;
         width: 100%;
     }
+
+    .single img {
+        max-width: 320px;
+    }
 }
 
 
@@ -115,6 +123,10 @@ ul.user-actions {
     
     .wrapper {
         width: 480px;
+    }
+
+    .single img {
+        max-width: 480px;
     }
 }
 
@@ -179,25 +191,18 @@ a:hover {
     width: 100%;
 }
 
-.single .photo {
-    height: 400px;
-    max-width: 850px;
-    min-width: 200px;
-}
-
-.single .photo img {
-    max-width: 90%;
-}
-
-.single #logo {
-    color: #333;
-}
 
 #logo, h1 {
     color: #222;
     font-size: 30px;
     font-weight: normal;
     text-transform: uppercase;
+}
+
+h1 {
+    clear: both;
+    float: left;
+    width: 100%;
 }
 
 #logo, #logo:hover {
