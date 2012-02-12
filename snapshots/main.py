@@ -9,7 +9,7 @@ from httplib2 import Http
 from PIL import Image
 from urllib import urlencode
 
-from flask import (Flask, jsonify, redirect,
+from flask import (abort, Flask, jsonify, redirect,
      render_template, request, session, url_for)
 
 import settings
@@ -26,7 +26,7 @@ app.secret_key = settings.SESSION_SECRET
 h = Http()
 snappy = Snappy()
 PHOTO_THUMB = 250, 250
-PHOTO_MEDIUM = 850, 450
+PHOTO_MEDIUM = 992, 450
 
 
 @app.route('/', methods=['GET'])
@@ -82,6 +82,7 @@ def set_email():
 
 @app.route('/upload', methods=['GET', 'POST'])
 @authenticated
+@csrf_protect
 def upload():
     """Upload a photo and save two versions - the original, medium
     and the thumb.
@@ -117,6 +118,7 @@ def snapshot(id=None):
 
 @app.route('/snapshot/edit/<id>', methods=['GET', 'POST'])
 @authenticated
+@csrf_protect
 def edit(id=None):
     """Edit or update an existing snapshot."""
     snapshot = snappy.get_image_by_user(id, session['snapshots_token'])
@@ -143,13 +145,6 @@ def logout():
     session['snapshots_token'] = None
     return redirect(url_for('main'))
 
-
-@app.before_request
-def csrf_protect():
-    if request.method == "POST":
-        token = session.pop('_csrf_token', None)
-        if not token or token != request.form.get('_csrf_token'):
-            abort(403)
 
 def generate_csrf_token():
     if '_csrf_token' not in session:

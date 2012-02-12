@@ -47,6 +47,93 @@ table {
     border-spacing: 0;
 }
 
+
+/* 992px. */
+
+body {
+    margin: 0 auto;
+    width: 992px;
+    -webkit-text-size-adjust: 100%; /* Stops Mobile Safari from auto-adjusting font-sizes */
+}
+
+.wrapper {
+    margin: 0 auto;
+    width: 992px;
+}
+
+ul.user-actions {
+    display: block;
+    float: right;
+}
+
+
+/* Tablet Layout: 768px.  */
+
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+    
+    body {
+        width: 768px;
+    }
+
+    .wrapper {
+        width: 768px;
+    }
+}
+
+
+
+/* Mobile Layout: 320px. */
+
+@media only screen and (max-width: 767px) {
+    
+    body {
+        width: 320px;
+        padding: 0px;
+    }
+
+    .wrapper {
+        width: 320px;
+    }
+    
+    ul.user-actions {
+        clear: both;
+        float: left;
+        margin-top: 15px;
+        width: 100%;
+    }
+}
+
+
+
+/* Wide Mobile Layout: 480px. */
+
+@media only screen and (min-width: 480px) and (max-width: 767px) {
+    
+    body {
+        width: 480px;
+    }
+    
+    .wrapper {
+        width: 480px;
+    }
+}
+
+
+/*  Retina media query.
+    Overrides styles for devices with a 
+    device-pixel-ratio of 2+, such as iPhone 4.
+-----------------------------------------------    */
+
+@media 
+    only screen and (-webkit-min-device-pixel-ratio: 2),
+    only screen and (min-device-pixel-ratio: 2) {
+    
+    body {
+    
+    }
+    
+}
+
 /* main content */
 
 @font-face {
@@ -85,12 +172,6 @@ a:hover {
     border-bottom: 2px solid #187fb4;
 }
 
-.wrapper {
-    clear: both;
-    float: left;
-    width: 100%;
-}
-
 .single .photo, div.edit {
     clear: both;
     float: left;
@@ -108,7 +189,7 @@ a:hover {
     max-width: 90%;
 }
 
-.single a#logo {
+.single #logo {
     color: #333;
 }
 
@@ -123,9 +204,8 @@ a:hover {
     border-bottom: 0px;
 }
 
-ul.user-actions {
-    display: block;
-    float: right;
+.single #logo {
+    color: #6cc2ee;
 }
 
 ul.user-actions li {
@@ -152,7 +232,9 @@ ul.user-actions li a:hover {
 }
 
 h1 {
+    clear: both;
     color: #444;
+    float: left;
     margin-top: 10px;
 }
 
@@ -196,39 +278,6 @@ button:hover {
     color: #2b89b8;
 }
 
-ul.photos {
-    margin-top: 10px;
-}
-
-ul.photos li {
-    background-color: #111;
-    display: block;
-    float: left;
-    height: 250px;
-    margin: 3px;
-    position: relative;
-    width: 250px;
-}
-
-ul.photos li a, ul.photos li a:hover {
-    border-bottom: 0px;
-}
-
-ul.photos li p {
-    background-color: #111;
-    bottom: 0px;
-    color: #eee;
-    font-family: Arial, sans-serif;
-    font-size: 12px;
-    line-height: 14px;
-    opacity: 0.9;
-    padding: 2px 4px 2px 4px;
-    position: absolute;
-    right: 0px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
 .single p {
     color: #ccc;
     font-family: Arial, sans-serif;
@@ -267,7 +316,7 @@ ul.photos li p {
 }
 
 .actions a.delete {
-    background-color: #ce193b;
+    background-color: #bf1919;
     color: #ffdee3;
 }
 

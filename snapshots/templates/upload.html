@@ -1,12 +1,10 @@
 {% extends "shared/layout.html" %}
 
 {% block title %}
-    Snapshots from here.
+    Snapshots from here. Upload
 {% endblock %}
 
 {% block content %}
-  <h1>Add a New Snapshot</h1>
-
   <div class="form-wrapper">
     <form method="post" enctype="multipart/form-data" action="/upload">
       <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
