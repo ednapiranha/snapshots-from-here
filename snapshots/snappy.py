@@ -41,6 +41,14 @@ class Snappy(object):
         self.token = emailer['token']
         return emailer
 
+    def update_profile(self, email, **kwargs):
+        """Update profile information."""
+        profile = {}
+        for key in kwargs:
+            profile[key] = str(kwargs[key]).strip()
+        self.db.users.update({"email":email},
+                             {"$set":profile})
+
     def _generate_token(self, email):
         """Generate a token based on the timestamp and the user's
         email address.
@@ -85,8 +93,11 @@ class Snappy(object):
                                         upsert=True)
 
         ATAG.text = ''
-        # self.db.photos.ensureIndex({"image_filename.tags": 1})
         return self.db.photos.find_one({"image_filename":filename})
+
+    def get_email(self, sender_token):
+        """Get the user's email by their token."""
+        return self.db.users.find_one({"token":sender_token})['email']
 
     def update_description(self, image_id, description):
         """Update the description for the image."""
@@ -130,9 +141,9 @@ class Snappy(object):
         get the total number with that tag.
         """
         if tag:
-            return self.db.photos.find({"tags":tag}).count()
+            return self.db.photos.find({"tags":tag}).count() - 1
         else:
-            return self.db.photos.count()        
+            return self.db.photos.count() - 1   
 
     def get_image(self, image_id):
         """Return the image matching the given id."""
@@ -151,12 +162,60 @@ class Snappy(object):
                                      photo['image_filename'] + '_original.jpg'))
         self.db.photos.remove({"_id":ObjectId(image_id)})
 
+    def favorited(self, image_id, sender_token):
+        """Toggled favorite/unfavorite of an image."""
+        photo = self.db.favorites.find_one({"image_id":ObjectId(image_id),
+                                            "token":sender_token})
+        if photo:
+            # unfavorite
+            self.db.favorites.remove({"_id":ObjectId(photo['_id'])})
+            return False
+        else:
+            # favorite
+            self.db.favorites.update({"image_id":ObjectId(image_id)},
+                                     {"$set":{"token":sender_token}},
+                                       upsert=True)
+            return True
+
+    def is_favorited(self, image_id, sender_token):
+        """Check to see if an image was favorited."""
+        photo = self.db.favorites.find_one({"image_id":ObjectId(image_id),
+                                            "token":sender_token})
+        if photo:
+            return False
+        return True
+
+    def add_comment(self, image_id, sender_token, description):
+        """Add a comment."""
+        if str(description).strip() is None:
+            return False
+        else:
+            user = self.db.users.find_one({"token":sender_token})
+            comment = self.db.comments.save({"image_id":ObjectId(image_id),
+                                             "token":sender_token,
+                                             "email":user['email'],
+                                             "full_name":user['full_name'],
+                                             "description":description,
+                                             "created_at":int(time.time())})
+
+            return self.db.comments.find_one({"_id":ObjectId(comment)})
+
+    def get_comments(self, image_id):
+        """Get all comments for this image."""
+        return self.db.comments.find({"image_id":ObjectId(
+                image_id)}).sort("created_at", DESCENDING)
+
+    def delete_comment(self, comment_id, sender_token):
+        """Delete a comment that you wrote."""
+        self.db.comments.remove({"_id":ObjectId(comment_id),
+                                 "token":sender_token})
+
     def _set_page(self, photos, page, nav):
         """Set the page and nav values."""
         page = int(page)
         if nav == 'next' and photos.count() > 1:
-            if page > photos.count():
-                page = photos.count()
+            if page > photos.count() - 1:
+                page = photos.count() - 1
         elif nav == 'prev':
             if page < 0:
                 page = 0

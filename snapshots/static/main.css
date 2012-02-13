@@ -102,7 +102,7 @@ ul.user-actions {
     ul.user-actions {
         clear: both;
         float: left;
-        margin-top: 15px;
+        margin: 15px 0px 15px 0px;
         width: 100%;
     }
 
@@ -175,13 +175,12 @@ body.edit {
 }
 
 a {
-    border-bottom: 2px solid #f4f4f4;
     color: #187fb4;
     text-decoration: none;
 }
 
 a:hover {
-    border-bottom: 2px solid #187fb4;
+    text-decoration: none;
 }
 
 .single .photo, div.edit {
@@ -193,15 +192,20 @@ a:hover {
 
 
 #logo, h1 {
-    color: #222;
     font-size: 30px;
     font-weight: normal;
     text-transform: uppercase;
 }
 
+#logo {
+    color: #222;
+}
+
 h1 {
     clear: both;
+    color: #888;
     float: left;
+    margin-top: 10px;
     width: 100%;
 }
 
@@ -236,13 +240,6 @@ ul.user-actions li a:hover {
     color: #303639;
 }
 
-h1 {
-    clear: both;
-    color: #444;
-    float: left;
-    margin-top: 10px;
-}
-
 .form-wrapper {
     border-top: 1px solid #ddd;
     clear: both;
@@ -258,6 +255,7 @@ input {
 
 input[type="text"] {
     border: 1px solid #ccc;
+    font-size: 14px;
     padding: 5px;
     width: 95%;
 }
@@ -290,17 +288,13 @@ button:hover {
 }
 
 .actions {
-    background-color: #1c1c1c;
-    border-bottom-left-radius: 3px;
-    -moz-border-radius-bottomleft: 3px;
-    -webkit-border-bottom-left-radius: 3px;
-    border-top-left-radius: 3px;
-    -moz-border-radius-topleft: 3px;
-    -webkit-border-top-left-radius: 3px;
+    background-color: #141414;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
     clear: both;
     float: left;
-    margin-top: 20px;
-    padding: 5px;
+    margin: 20px 0px 20px 0px;
     width: 100%;
 }
 
@@ -310,7 +304,7 @@ button:hover {
     display: block;
     float: left;
     font-size: 18px;
-    margin-right: 10px;
+    margin: 5px;
     padding: 3px 6px 3px 6px;
     text-transform: uppercase;
 }
@@ -325,7 +319,99 @@ button:hover {
     color: #ffdee3;
 }
 
+.actions a.like {
+    background-color: #ff7a99;
+    background-image: url('/static/images/like.png');
+    background-position: 2px;
+    background-repeat: no-repeat;
+    color: #500d1d;
+}
+
+.actions a.like.favorited {
+    background-color: #333;
+    color: #fff;
+}
+
 .actions a:hover {
     background-color: #fff;
     color: #333;
+}
+
+.comments {
+    background-color: #eee;
+    clear: both;
+    float: left;
+    width: 100%;
+}
+
+.comments form {
+    padding: 10px;
+}
+
+.comments p {
+    border-top: 1px solid #ccc;
+    clear: both;
+    color: #222;
+    display: block;
+    float: left;
+    margin-bottom: 5px;
+    overflow: hidden;
+    padding: 10px;
+    text-overflow: ellipsis;
+    width: 93%;
+}
+
+p .delete {
+    background-color: #eee;
+    clear: both;
+    display: block;
+    float: right;
+    font-family: 'FranklinGothicBookXComp';
+    font-size: 18px;
+    margin-top: 10px;
+    padding: 3px;
+    text-transform: uppercase;
+}
+
+.avatar {
+    clear: both;
+    float: left;
+    margin-top: 15px;
+}
+
+.description img {
+    margin-right: 5px;
+}
+
+#footer {
+    background-color: #ddd;
+    clear: both;
+    float: left;
+    margin: 25px 0px 25px 0px;
+    padding: 10px 0px 10px 0px;
+    width: 100%;
+}
+
+.single #footer {
+    background-color: #0a0a0a;
+}
+
+.edit #footer {
+    background-color: #38b5d9;
+}
+
+#footer li {
+    float: left;
+    padding: 5px 15px 5px 15px;
+    width: 30%;
+}
+
+#footer li a {
+    color: #666;
+    font-size: 20px;
+    text-transform: uppercase;
+}
+
+.edit #footer li a {
+    color: #1d5c6e;
 }

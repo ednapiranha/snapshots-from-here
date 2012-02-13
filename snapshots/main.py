@@ -69,11 +69,45 @@ def get_tag(tag=None, page=1, nav='next'):
              'id': str(ObjectId(snapshot['_id']))}})
 
 
-@app.route('/your_snapshots', methods=['GET'])
+@app.route('/favorite/<id>', methods=['GET'])
 @authenticated
-def your_snapshots():
-    """Your snapshots"""
-    return render_template('your_snapshots.html')
+def favorite(id=None):
+    """Favorite/Unfavorite a snapshot."""
+    return jsonify({'snapshot':
+                   {'favorited': snappy.favorited(id,
+                            session['snapshots_token'])}})
+
+
+@app.route('/add_comment', methods=['POST'])
+@authenticated
+@csrf_protect
+def add_comment():
+    """Add a new comment to a snapshot."""
+    comment = snappy.add_comment(request.form['id'],
+                                 session['snapshots_token'],
+                                 request.form['description'])
+    if comment:
+        print comment
+        return jsonify({'comment':
+                   {'description': comment['description'],
+                    'id': str(ObjectId(comment['_id']))}})
+    else:
+        return jsonify({'error':'comment cannot be blank'})
+
+
+@app.route('/delete_comment/<id>', methods=['GET'])
+@authenticated
+def delete_comment(id=None):
+    """Delete a comment."""
+    comment = snappy.delete_comment(id, session['snapshots_token'])
+    return jsonify({'message':'comment deleted'})
+                   
+
+@app.route('/snapshots/<id>', methods=['GET'])
+@authenticated
+def snapshots():
+    """User snapshots."""
+    return render_template('snapshots.html')
 
 
 @app.route('/set_email', methods=['POST'])
@@ -97,7 +131,26 @@ def set_email():
         snappy.get_or_create_email(bid_data['email'])
         session['snapshots_token'] = snappy.token
         session['snapshots_email'] = bid_data['email']
-    return redirect(url_for('your_snapshots'))
+    return redirect(url_for('profile'))
+
+
+@app.route('/profile', methods=['GET', 'POST'])
+@authenticated
+@csrf_protect
+def profile():
+    """View and update profile information."""
+    user = snappy.get_or_create_email(session['snapshots_email'])
+    if request.method == 'POST':
+        snappy.update_profile(session['snapshots_email'],
+                              full_name=request.form['full_name'],
+                              bio=request.form['bio'],
+                              website=request.form['website'])
+        return redirect(url_for('profile'))
+    else:
+        return render_template('profile.html',
+                                user=user,
+                                gravatar=gravatar(session['snapshots_email'],
+                                                  size=80))
 
 
 @app.route('/upload', methods=['GET', 'POST'])
@@ -110,6 +163,10 @@ def upload():
     if request.method == 'POST':
         filename = str(int(time.time()))
         request.files['photo'].save(os.path.join('tmp/', filename))
+
+        thumb = Image.open(os.path.join('tmp/', filename))
+        thumb.thumbnail(PHOTO_THUMB, Image.BICUBIC)
+        thumb.save('tmp/' + filename + '_thumb', 'JPEG')
 
         medium = Image.open(os.path.join('tmp/', filename))
         medium.thumbnail(PHOTO_MEDIUM, Image.BICUBIC)
@@ -129,7 +186,18 @@ def upload():
 def snapshot(id=None):
     """Your snapshot."""
     snapshot = snappy.get_image(id)
-    return render_template('snapshot.html', snapshot=snapshot)
+    if session['snapshots_email']:
+        return render_template('snapshot.html', snapshot=snapshot,
+                                gravatar=gravatar(snappy.get_email(
+                                        snapshot['token'])),
+                                favorited=snappy.is_favorited(id,
+                                        session['snapshots_token']),
+                                comments=snappy.get_comments(id))
+    else:
+        return render_template('snapshot.html', snapshot=snapshot,
+                                gravatar=gravatar(snappy.get_email(
+                                        snapshot['token'])),
+                                comments=snappy.get_comments(id))
 
 
 @app.route('/snapshot/edit/<id>', methods=['GET', 'POST'])
@@ -139,11 +207,14 @@ def edit(id=None):
     """Edit or update an existing snapshot."""
     snapshot = snappy.get_image_by_user(id, session['snapshots_token'])
 
-    if request.method == 'POST':
-        snappy.update_description(id, request.form['description'])
-        return redirect(url_for('snapshot', id=snapshot['_id']))
+    if not snapshot:
+        return redirect(url_for('main'))
     else:
-        return render_template('edit.html', snapshot=snapshot)
+        if request.method == 'POST':
+            snappy.update_description(id, request.form['description'])
+            return redirect(url_for('snapshot', id=snapshot['_id']))
+        else:
+            return render_template('edit.html', snapshot=snapshot)
 
 
 @app.route('/snapshot/delete/<id>', methods=['GET'])

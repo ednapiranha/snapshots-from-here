@@ -1,0 +1,29 @@
+{% extends "index.html" %}
+
+{% block page_type %}{% endblock %}
+
+{% block title %}
+    Profile
+{% endblock %}
+
+{% block header %}<h1>Your Profile</h1>{% endblock %}
+
+{% block content %}
+  <div class="avatar">
+    <img src="{{ gravatar }}">
+    <span class="full_name">{{ user['full_name']}}</span>
+  </div>
+  <div class="form-wrapper">
+    <form method="post" action="/profile">
+      <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
+      <input type="text" name="full_name"
+             placeholder="Your name (optional)" value="{{ user['full_name'] }}">
+      <input type="text" name="bio" placeholder="Bio (optional)"
+             value="{{ user['bio'] }}">
+      <input type="text" name="website"
+             placeholder="http://yourwebsite.here (optional)"
+             value="{{ user['website']}}">
+      <button type="submit">Update</button>
+    </form>
+  </div>
+{% endblock %}

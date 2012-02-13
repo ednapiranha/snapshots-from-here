@@ -1,3 +1,4 @@
+import md5
 from flask import abort, redirect, request, session, url_for
 from functools import wraps
 
@@ -24,3 +25,10 @@ def csrf_protect(f):
                 abort(403)
         return f(*args, **kwargs)
     return decorated
+
+
+def gravatar(email, size=50):
+    """Get gravatar image."""
+    email = str(md5.new(email).hexdigest())
+    gravatar = 'http://www.gravatar.com/avatar/%s?s=%s' % (email, size)
+    return gravatar

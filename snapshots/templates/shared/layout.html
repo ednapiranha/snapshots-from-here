@@ -2,7 +2,7 @@
 <html>
   {% block head %}
     <head>
-      <title>{% block title %}{% endblock %}</title>
+      <title>Snapshot from here. {% block title %}{% endblock %}</title>
       <meta content="width=device-width, height=device-height, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" name="viewport" />
       <meta content="yes" name="apple-mobile-web-app-capable" />
       <meta content="chrome=1" http-equiv="X-UA-Compatible" />
@@ -14,9 +14,12 @@
   {% endblock %}
   <body class="{% block page_type %}{% endblock %}">
     <div class="wrapper">
-      <a id="logo" href="{{ url_for('main') }}">Snapshots from here.</a>
+      <a id="logo" href="{{ url_for('main') }}">Snapshot from here.</a>
       <ul class="user-actions">
         {% if session['snapshots_email'] %}
+          <li>
+            <a href="{{ url_for('profile') }}">Profile</a>
+          </li>
           <li>
             <a href="{{ url_for('upload') }}">Upload</a>
           </li>
@@ -36,8 +39,12 @@
       {% block header %}{% endblock %}
       {% block content %}{% endblock %}
       {% block footer %}
-        <div class="footer">
-            
+        <div id="footer">
+          <ul>
+            <li><a href="http://github.com/ednapiranha/snapshots-from-here">Contribute</a></li>
+            <li><a href="http://ednapiranha.com">Twitter</a></li>
+            <li><a href="mailto:jen@ednapiranha.com">Contact</a></li>
+          </ul>
         </div>
       {% endblock %}
     </div>
