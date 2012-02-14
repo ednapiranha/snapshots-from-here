@@ -436,3 +436,9 @@ ul.photos li {
 .edit #footer li a {
     color: #1d5c6e;
 }
+
+.disclaimer {
+    color: #eee;
+    font-size: 14px;
+    text-transform: uppercase;
+}

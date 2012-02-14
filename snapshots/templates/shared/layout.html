@@ -15,6 +15,7 @@
   <body class="{% block page_type %}{% endblock %}">
     <div class="wrapper">
       <a id="logo" href="{{ url_for('main') }}">Snapshot from here.</a>
+      <span class="disclaimer">(this ain't done yet)</span>
       <ul class="user-actions">
         {% if session['snapshots_email'] %}
           <li>

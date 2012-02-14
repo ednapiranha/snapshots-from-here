@@ -159,9 +159,11 @@ def dashboard():
     """View dashboard."""
     user = snappy.get_or_create_email(session['snapshots_email'])
     snapshots = snappy.get_latest_snapshots(user['token'])
+    favorites = snappy.get_latest_favorites(user['token'])
     return render_template('dashboard.html',
                             user=user,
                             snapshots=snapshots,
+                            favorites=favorites,
                             gravatar=gravatar(session['snapshots_email'],
                                               size=80))
 

@@ -15,6 +15,7 @@ import settings
 CONTENT_TYPE = 'image/jpeg'
 ATAG = AutoTagify()
 ATAG.link = "/tag"
+RECENT_LIMIT = 12
 
 
 class Snappy(object):
@@ -184,9 +185,18 @@ class Snappy(object):
         return self.db.photos.find_one({"_id":ObjectId(image_id)})
 
     def get_latest_snapshots(self, sender_token):
-        """Get the last 10 images from this user."""
+        """Get the last 12 images from this user."""
         return self.db.photos.find({"token":
-                sender_token}).sort("created_at", DESCENDING).limit(9)
+                sender_token}).sort("created_at", DESCENDING).limit(RECENT_LIMIT)
+    
+    def get_latest_favorites(self, sender_token):
+        """Get the last 12 favorites from this user."""
+        favorites = self.db.favorites.find({"token":
+                sender_token}).sort("created_at", DESCENDING).limit(RECENT_LIMIT)
+        photos = []
+        for favorite in favorites:
+            photos.append(self.db.photos.find_one({"_id": favorite['image_id']}))
+        return photos
 
     def get_image_by_user(self, image_id, sender_token):
         """Return an image matching the given id and user."""
@@ -211,7 +221,8 @@ class Snappy(object):
         if photo is None:
             # favorite
             self.db.favorites.update({"image_id":ObjectId(image_id)},
-                                     {"$set":{"token":sender_token}},
+                                     {"$set":{"token":sender_token,
+                                              "created_at":int(time.time())}},
                                        upsert=True)
             return True
         else:

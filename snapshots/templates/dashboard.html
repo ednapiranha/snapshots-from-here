@@ -17,7 +17,22 @@
   <h2>Recent Snapshots</h2>
   <ul class="photos">
     {% for snapshot in snapshots %}
-      <li><img src="{{ snapshot['image_thumb'] }}"></li>
+      <li>
+        <a href="{{ url_for('snapshot', id=snapshot['_id']) }}">
+          <img src="{{ snapshot['image_thumb'] }}">
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+
+  <h2>Recent Favorites</h2>
+  <ul class="photos">
+    {% for favorite in favorites %}
+      <li>
+        <a href="{{ url_for('snapshot', id=favorite['_id']) }}">
+          <img src="{{ favorite['image_thumb'] }}">
+        </a>
+      </li>
     {% endfor %}
   </ul>
 {% endblock %}
