@@ -1,0 +1,32 @@
+{% extends "index.html" %}
+
+{% block title %}
+  By:
+  {% if user['full_name'] %}
+      {{ user['full_name'] }}
+    {% else %}
+      Unknown
+    {% endif %}
+{% endblock %}
+
+{% block header %}
+  <h1>
+    By:
+    {% if user['full_name'] %}
+      {{ user['full_name'] }}
+    {% else %}
+      Unknown
+    {% endif %}
+  </h1>
+{% endblock %}
+
+{% block content %}
+  {% if snapshot['_id'] %}
+    <a href="{{ url_for('snapshot', id=snapshot['_id']) }}">
+      <div class="photo" data-photo-count="{{ photo_count }}">
+        <img src="{{ snapshot['image_medium'] }}"
+             data-url="/user/{{ user['_id'] }}/">
+      </div>
+    </a>
+  {% endif %}
+{% endblock %}

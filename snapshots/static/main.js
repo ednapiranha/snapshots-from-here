@@ -48,11 +48,11 @@ $(function() {
 
         $.getJSON(self.attr('href'), function(data) {
             if(data.snapshot.favorited) {
-                self.removeClass('favorited');
-                self.text('Favorite');
-            } else {
                 self.addClass('favorited');
                 self.text('Unfavorite');
+            } else {
+                self.removeClass('favorited');
+                self.text('Favorite');
             }
         });
     });

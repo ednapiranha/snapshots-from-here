@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import md5
 from flask import abort, redirect, request, session, url_for
 from functools import wraps

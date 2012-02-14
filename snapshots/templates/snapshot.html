@@ -10,7 +10,9 @@
   <div class="photo">
     <img src="{{ snapshot['image_medium'] }}">
     <p class="description">
-      <img src="{{ gravatar }}">
+      <a href="{{ url_for('user_snapshot_first', id=user['_id']) }}">
+        <img src="{{ gravatar }}">
+      </a>
       {{ snapshot['tagged_description']|safe }}
     </p>
     {% if session['snapshots_token'] %}

@@ -80,7 +80,6 @@ def favorite(id=None):
 
 @app.route('/add_comment', methods=['POST'])
 @authenticated
-@csrf_protect
 def add_comment():
     """Add a new comment to a snapshot."""
     comment = snappy.add_comment(request.form['id'],
@@ -153,6 +152,42 @@ def profile():
                                                   size=80))
 
 
+@app.route('/dashboard', methods=['GET', 'POST'])
+@authenticated
+@csrf_protect
+def dashboard():
+    """View dashboard."""
+    user = snappy.get_or_create_email(session['snapshots_email'])
+    snapshots = snappy.get_latest_snapshots(user['token'])
+    return render_template('dashboard.html',
+                            user=user,
+                            snapshots=snapshots,
+                            gravatar=gravatar(session['snapshots_email'],
+                                              size=80))
+
+
+@app.route('/user/<id>', methods=['GET'])
+def user_snapshot_first(id=None):
+    """User's first snapshot."""
+    user = snappy.get_user_by_id(id)
+    snapshot = snappy.get_recent_by_user(user['token'])
+    return render_template('user.html',
+                            user=user,
+                            snapshot=snapshot,
+                            photo_count=snappy.get_photo_count_by_user(user['token']))
+
+
+@app.route('/user/<id>/<page>/<nav>', methods=['GET'])
+def user_snapshots(id=None, page=1, nav='next'):
+    """User's snapshots."""
+    user = snappy.get_user_by_id(id)
+    snapshot = snappy.get_recent_by_user(user['token'], page=page, nav=nav)
+    print(snapshot)
+    return jsonify({'snapshot':
+            {'image_medium': snapshot['image_medium'],
+             'id': str(ObjectId(snapshot['_id']))}})
+
+
 @app.route('/upload', methods=['GET', 'POST'])
 @authenticated
 @csrf_protect
@@ -160,7 +195,7 @@ def upload():
     """Upload a photo and save two versions - the original, medium
     and the thumb.
     """
-    if request.method == 'POST':
+    if request.method == 'POST' and request.files['photo']:
         filename = str(int(time.time()))
         request.files['photo'].save(os.path.join('tmp/', filename))
 
@@ -186,10 +221,12 @@ def upload():
 def snapshot(id=None):
     """Your snapshot."""
     snapshot = snappy.get_image(id)
+    user = snappy.get_user_by_token(snapshot['token'])
     if session['snapshots_email']:
         return render_template('snapshot.html', snapshot=snapshot,
                                 gravatar=gravatar(snappy.get_email(
                                         snapshot['token'])),
+                                user=user,
                                 favorited=snappy.is_favorited(id,
                                         session['snapshots_token']),
                                 comments=snappy.get_comments(id))
@@ -197,6 +234,7 @@ def snapshot(id=None):
         return render_template('snapshot.html', snapshot=snapshot,
                                 gravatar=gravatar(snappy.get_email(
                                         snapshot['token'])),
+                                user=user,
                                 comments=snappy.get_comments(id))
 
 

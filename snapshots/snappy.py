@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import base64
 import os
 import random
@@ -41,6 +42,14 @@ class Snappy(object):
         self.token = emailer['token']
         return emailer
 
+    def get_user_by_id(self, id):
+        """Find a user by id."""
+        return self.db.users.find_one({"_id":ObjectId(id)})
+
+    def get_user_by_token(self, sender_token):
+        """Find a user by token."""
+        return self.db.users.find_one({"token":sender_token})
+
     def update_profile(self, email, **kwargs):
         """Update profile information."""
         profile = {}
@@ -65,6 +74,7 @@ class Snappy(object):
         """
         image_full_path = os.path.join('tmp/', filename + '_original')
         image_full_path_medium = os.path.join('tmp/', filename + '_medium')
+        image_full_path_thumb = os.path.join('tmp/', filename + '_thumb')
 
         aws_key = Key(settings.BUCKET)
         aws_key.key = filename + '_original.jpg'
@@ -73,6 +83,11 @@ class Snappy(object):
         image_full_path_original = '%s%s_original.jpg' % (settings.IMAGE_URL,
                                                           filename)
         
+        aws_key.key = filename + '_thumb.jpg'
+        aws_key.set_contents_from_filename(image_full_path_thumb,
+                                           headers={'Content-Type': CONTENT_TYPE})
+        image_full_path_thumb = '%s%s_thumb.jpg' % (settings.IMAGE_URL, filename)
+
         aws_key.key = filename + '_medium.jpg'
         aws_key.set_contents_from_filename(image_full_path_medium,
                                            headers={'Content-Type': CONTENT_TYPE})
@@ -87,6 +102,7 @@ class Snappy(object):
                                        "tagged_description":tagged_description,
                                        "tags":ATAG.tag_list(),
                                        "image_original":image_full_path_original,
+                                       "image_thumb":image_full_path_thumb,
                                        "image_medium":image_full_path_medium,
                                        "token":sender_token,
                                        "created_at":int(time.time())}},
@@ -123,6 +139,19 @@ class Snappy(object):
         except IndexError:
             return self.db.photos.find().sort("created_at").limit(1)[0]
 
+    def get_recent_by_user(self, sender_token, page=0, nav='next'):
+        """Get all recently uploaded images by a user. Navigation defaults at the
+        next image created (descending). If navigation is set to 'prev', we go in
+        the reverse direction.
+        """
+        photos = self.db.photos.find({"token":sender_token}).sort("created_at", DESCENDING)
+        page = self._set_page(photos, page, nav)
+
+        try:
+            return photos.skip(page*1).limit(1)[0]
+        except IndexError:
+            return self.db.photos.find().sort("created_at").limit(1)[0]
+
     def get_recent_tag(self, tag=None, page=0, nav='next'):
         """Get all recently uploaded images matching this tag. Navigation
         defaults at the next image created (descending). If navigation is set to
@@ -143,11 +172,21 @@ class Snappy(object):
         if tag:
             return self.db.photos.find({"tags":tag}).count() - 1
         else:
-            return self.db.photos.count() - 1   
+            return self.db.photos.count() - 1
+            
+    def get_photo_count_by_user(self, sender_token):
+        """Get the total number of photos for a user.
+        """
+        return self.db.photos.find({"token":sender_token}).count() - 1   
 
     def get_image(self, image_id):
         """Return the image matching the given id."""
         return self.db.photos.find_one({"_id":ObjectId(image_id)})
+
+    def get_latest_snapshots(self, sender_token):
+        """Get the last 10 images from this user."""
+        return self.db.photos.find({"token":
+                sender_token}).sort("created_at", DESCENDING).limit(9)
 
     def get_image_by_user(self, image_id, sender_token):
         """Return an image matching the given id and user."""
@@ -158,36 +197,39 @@ class Snappy(object):
         """Delete the image matching the given id and user."""
         photo = self.db.photos.find_one({"_id":ObjectId(image_id),
                                          "token":sender_token})
-        settings.BUCKET.delete_keys((photo['image_filename'] + '_medium.jpg',
+        settings.BUCKET.delete_keys((photo['image_filename'] + '_thumb.jpg',
+                                     photo['image_filename'] + '_medium.jpg',
                                      photo['image_filename'] + '_original.jpg'))
         self.db.photos.remove({"_id":ObjectId(image_id)})
+        self.db.comments.remove({"image_id":ObjectId(image_id)})
+        self.db.favorites.remove({"image_id":ObjectId(image_id)})
 
     def favorited(self, image_id, sender_token):
         """Toggled favorite/unfavorite of an image."""
         photo = self.db.favorites.find_one({"image_id":ObjectId(image_id),
                                             "token":sender_token})
-        if photo:
-            # unfavorite
-            self.db.favorites.remove({"_id":ObjectId(photo['_id'])})
-            return False
-        else:
+        if photo is None:
             # favorite
             self.db.favorites.update({"image_id":ObjectId(image_id)},
                                      {"$set":{"token":sender_token}},
                                        upsert=True)
             return True
+        else:
+            # unfavorite
+            self.db.favorites.remove({"_id":ObjectId(photo['_id'])})
+            return False
 
     def is_favorited(self, image_id, sender_token):
         """Check to see if an image was favorited."""
         photo = self.db.favorites.find_one({"image_id":ObjectId(image_id),
                                             "token":sender_token})
-        if photo:
+        if photo is None:
             return False
         return True
 
     def add_comment(self, image_id, sender_token, description):
         """Add a comment."""
-        if str(description).strip() is None:
+        if len(description.strip()) < 1:
             return False
         else:
             user = self.db.users.find_one({"token":sender_token})

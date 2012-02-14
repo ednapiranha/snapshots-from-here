@@ -1,0 +1,23 @@
+{% extends "index.html" %}
+
+{% block page_type %}{% endblock %}
+
+{% block title %}
+    Dashboard
+{% endblock %}
+
+{% block header %}<h1>Dashboard</h1>{% endblock %}
+
+{% block content %}
+  <div class="avatar">
+    <img src="{{ gravatar }}">
+    <span class="full_name">{{ user['full_name']}}</span>
+  </div>
+
+  <h2>Recent Snapshots</h2>
+  <ul class="photos">
+    {% for snapshot in snapshots %}
+      <li><img src="{{ snapshot['image_thumb'] }}"></li>
+    {% endfor %}
+  </ul>
+{% endblock %}

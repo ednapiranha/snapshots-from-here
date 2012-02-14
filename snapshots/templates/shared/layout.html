@@ -18,6 +18,9 @@
       <ul class="user-actions">
         {% if session['snapshots_email'] %}
           <li>
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+          </li>
+          <li>
             <a href="{{ url_for('profile') }}">Profile</a>
           </li>
           <li>

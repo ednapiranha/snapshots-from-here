@@ -191,7 +191,7 @@ a:hover {
 }
 
 
-#logo, h1 {
+#logo, h1, h2 {
     font-size: 30px;
     font-weight: normal;
     text-transform: uppercase;
@@ -201,12 +201,16 @@ a:hover {
     color: #222;
 }
 
-h1 {
+h1, h2 {
     clear: both;
     color: #888;
     float: left;
     margin-top: 10px;
     width: 100%;
+}
+
+h2 {
+    margin-top: 40px;
 }
 
 #logo, #logo:hover {
@@ -219,7 +223,7 @@ h1 {
 
 ul.user-actions li {
     float: left;
-    margin: 0px 5px 0px 5px;
+    margin: 0px 10px 0px 0px;
     width: auto;
 }
 
@@ -379,8 +383,25 @@ p .delete {
     margin-top: 15px;
 }
 
+.avatar .full_name {
+    font-size: 25px;
+    padding-left: 10px;
+}
+
 .description img {
     margin-right: 5px;
+}
+
+ul.photos {
+    clear: both;
+    display: block;
+}
+
+ul.photos li {
+    background-color: #111;
+    float: left;
+    height: 250px;
+    margin: 10px 10px 0px 0px;
 }
 
 #footer {
