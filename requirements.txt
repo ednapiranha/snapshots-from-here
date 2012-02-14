@@ -8,3 +8,5 @@ boto==2.2.1
 -e git://github.com/ednapiranha/httplib2.git#egg=httplib2
 simplejson==2.3.0
 urllib3==1.0.2
+auto_tagify
+nose
