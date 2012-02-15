@@ -402,6 +402,7 @@ ul.photos li {
     float: left;
     height: 250px;
     margin: 10px 10px 0px 0px;
+    width: 250px;
 }
 
 #footer {
