@@ -285,6 +285,4 @@ app.jinja_env.globals['csrf_token'] = generate_csrf_token
 
 if __name__ == '__main__':
     app.debug = settings.DEBUG
-    app.env = 'dev'
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
+    app.run()
