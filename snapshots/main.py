@@ -221,7 +221,7 @@ def upload():
 
 @app.route('/snapshot/<id>', methods=['GET'])
 def snapshot(id=None):
-    """Your snapshot."""
+    """A snapshot."""
     snapshot = snappy.get_image(id)
     user = snappy.get_user_by_token(snapshot['token'])
     if session['snapshots_email']:

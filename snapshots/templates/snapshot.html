@@ -34,13 +34,15 @@
     {% endif %}
 
     <div class="comments">
-      <form method="post" action="/add_comment">
-        <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
-        <input type="hidden" name="id" value="{{ snapshot['_id'] }}">
-        <input type="text" name="description"
-               placeholder="Your comment">
-        <button type="submit">Add comment</button>
-      </form>
+      {% if session['snapshots_token'] %}
+        <form method="post" action="/add_comment">
+          <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
+          <input type="hidden" name="id" value="{{ snapshot['_id'] }}">
+          <input type="text" name="description"
+                 placeholder="Your comment">
+          <button type="submit">Add comment</button>
+        </form>
+      {% endif %}
       {% for comment in comments %}
         <p>
           {{ comment.description }}
