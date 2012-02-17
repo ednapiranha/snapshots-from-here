@@ -15,7 +15,7 @@
       </a>
       {{ snapshot['tagged_description']|safe }}
     </p>
-    {% if session['snapshots_token'] %}
+    {% if session.get('snapshots_token') %}
       <div class="actions">
         {% if favorited %}
           <a href="{{ url_for('favorite', id=snapshot['_id'])}}"
@@ -34,7 +34,7 @@
     {% endif %}
 
     <div class="comments">
-      {% if session['snapshots_token'] %}
+      {% if session.get('snapshots_token') %}
         <form method="post" action="/add_comment">
           <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
           <input type="hidden" name="id" value="{{ snapshot['_id'] }}">

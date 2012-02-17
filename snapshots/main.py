@@ -224,7 +224,7 @@ def snapshot(id=None):
     """A snapshot."""
     snapshot = snappy.get_image(id)
     user = snappy.get_user_by_token(snapshot['token'])
-    if session['snapshots_email']:
+    if session.get('snapshots_email'):
         return render_template('snapshot.html', snapshot=snapshot,
                                 gravatar=gravatar(snappy.get_email(
                                         snapshot['token'])),
