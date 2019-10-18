@@ -7,6 +7,6 @@ boto==2.2.1
 -e git://github.com/fredj/flask-jsonify.git#egg=flask_jsonify
 -e git://github.com/ednapiranha/httplib2.git#egg=httplib2
 simplejson==2.3.0
-urllib3==1.0.2
+urllib3==1.24.2
 auto_tagify
 nose
